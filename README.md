@@ -1,111 +1,135 @@
-🕵️ Chrome Browser History Analyzer (Forensics)
-A Python-based digital forensics tool that extracts and analyzes Google Chrome browsing and search history from a forensic perspective.
-This tool is designed for Cybersecurity students, SOC analysts, and Digital Forensics investigators to understand user browsing behavior while maintaining evidence integrity.
-________________________________________
+# 🕵️ Chrome Browser History Analyzer (Forensics)
 
-📌 Features
-•	🔍 Extracts last 20 search queries from:
-o	Google
-o	YouTube
-o	Amazon
-o	ChatGPT (derived from page titles)
-•	🌐 Displays last 20 visited websites
-•	🕒 Converts Chrome timestamp to human-readable date & time
-•	📄 Generates an automatic forensic report (.txt)
-•	🖥️ Prints output to terminal + report file simultaneously
-•	🛡️ Maintains forensic integrity by analyzing a copied history file
+A **Python-based digital forensics tool** that extracts and analyzes **Google Chrome browsing and search history** from a forensic investigation perspective.  
+Designed for **Cybersecurity students, SOC analysts, and Digital Forensics professionals** while maintaining evidence integrity.
 
-________________________________________
+---
 
-🧪 Forensic Relevance
+## ✨ Features
+
+| Feature | Description |
+|------|-------------|
+| 🔍 Search Analysis | Extracts last 20 search queries from Google, YouTube, Amazon & ChatGPT |
+| 🌐 Website Analysis | Displays last 20 visited websites |
+| 🕒 Timestamp Conversion | Converts Chrome timestamps to readable date & time |
+| 📄 Report Generation | Automatically generates forensic report (.txt) |
+| 🖥️ Dual Output | Prints output to terminal and report file |
+| 🛡️ Forensic Integrity | Analyzes a copied history database |
+
+---
+
+## 🎯 Forensic Relevance
+
 This tool is useful for:
-•	Browser forensics
-•	Incident response investigations
-•	User activity reconstruction
-•	Academic & lab demonstrations
-•	SOC analyst training
-•	Cybercrime investigations (educational use)
-⚠️ Note: This tool is intended for educational and authorized forensic analysis only.
 
-________________________________________
+- Browser forensics
+- Incident response investigations
+- User activity reconstruction
+- Academic and lab demonstrations
+- SOC analyst training
+- Educational cybercrime investigations
 
-🛠️ Requirements
-•	Python 3.x
-•	Linux (Tested on Kali Linux)
-•	Google Chrome browser
-•	Required Python modules (built-in):
-o	sqlite3
-o	shutil
-o	datetime
-o	urllib.parse
-No external libraries required ✅
+⚠️ **Note:** Authorized and educational use only.
 
-________________________________________
+---
 
-🚀 Installation & Usage
-1️⃣ Clone the Repository
-git clone https://github.com/yourusername/Browser_history_analyzer.git
-cd Browser_history_analyzer
-2️⃣ Run the Script
+## 🛠️ Requirements
+
+| Component | Details |
+|--------|---------|
+| OS | Linux (Tested on Kali Linux) |
+| Python | Python 3.x |
+| Browser | Google Chrome |
+| Libraries | Built-in Python modules only |
+
+### 📦 Built-in Python Modules
+
+| Module | Purpose |
+|------|---------|
+| sqlite3 | Access Chrome history database |
+| shutil | Create forensic copy |
+| datetime | Timestamp conversion |
+| urllib.parse | Search query extraction |
+
+---
+
+## 🚀 Installation
+
+```bash
+git clone https://github.com/Dhruvik090/Browser-History-Analyzer.git
+cd Browser-History-Analyzer
+```
+
+---
+
+## ▶️ Usage
+
+```bash
 python3 Browser_history_analyzer.py
-3️⃣ Output
-•	A report file will be generated automatically:
+```
+
+---
+
+## 📂 Output
+
+### 🧾 Generated Reports
+```
 Chrome_Forensic_Report_1.txt
 Chrome_Forensic_Report_2.txt
-•	Output is displayed in terminal and saved to the report file simultaneously.
+```
 
-________________________________________
-
-📂 Sample Output
+### 🔍 Sample Search History Output
+```
 [01] 🕒 2025-12-27 17:19:01
      🔍 Engine : Google
      🔑 Query  : amazon laptop
 ------------------------------------------------------------
 
+[02] 🕒 2025-12-27 16:46:51
+     🔍 Engine : YouTube
+     🔑 Query  : cyber security roadmap
+------------------------------------------------------------
+```
+
+### 🌐 Sample Visited Websites Output
+```
 [01] 🕒 2025-12-27 16:46:51
      🌍 Site   : www.youtube.com
      📄 Title  : YouTube
      🔢 Visits : 125
 ------------------------------------------------------------
+```
 
-________________________________________
+---
 
-🔐 Forensic Methodology Used
-•	Chrome History SQLite database
-•	Evidence duplication (History_copy)
-•	Read-only analysis
-•	Timeline-based reconstruction
-•	Search query extraction using URL parameters
+## 🔐 Forensic Methodology
 
-________________________________________
+- Chrome History SQLite database analysis
+- Evidence duplication using `History_copy`
+- Read-only forensic examination
+- Timeline-based activity reconstruction
+- URL parameter-based search extraction
 
-📚 Learning Outcomes
-•	Understand browser artifact structure
-•	Learn Chrome SQLite database analysis
-•	Practice real-world digital forensics
-•	Improve Python scripting for security
+---
 
-________________________________________
+## 📘 Learning Outcomes
 
-👨‍💻 Author
-Dhruvik Variya
-🎓 MSc IT (Cybersecurity & Digital Forensics)
-🛡️ Cybersecurity Student
-🐧 Kali Linux User
+- Understand browser forensic artifacts
+- Perform Chrome SQLite database analysis
+- Apply Python scripting in cybersecurity
+- Practice real-world forensic investigation techniques
 
-________________________________________
+---
 
-⚖️ Disclaimer
-This tool is developed strictly for educational and ethical forensic purposes.
-Unauthorized access or misuse of personal data is illegal and unethical.
+## 👨‍💻 Author
 
-________________________________________
+**Dhruvik Variya**  
+🎓 MSc IT (Cybersecurity & Digital Forensics)  
+🛡️ Cybersecurity Student  
 
-⭐ Support
-If you find this project useful:
-•	⭐ Star the repository
-•	🍴 Fork it
-•	🛠️ Improve it
+---
 
-________________________________________
+## ⚖️ Disclaimer
 
+This project is developed strictly for **educational and ethical purposes**.  
+Unauthorized access or misuse of personal data is illegal.
