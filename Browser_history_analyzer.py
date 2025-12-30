@@ -1,9 +1,13 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import sqlite3
 import shutil
+import argparse
 from datetime import datetime, timedelta
 from urllib.parse import urlparse, parse_qs
+
 
 # ================= OUTPUT TO FILE + TERMINAL =================
 class TeeOutput:
@@ -19,27 +23,15 @@ class TeeOutput:
         self.terminal.flush()
         self.file.flush()
 
-# ================= GET NEXT FILE NUMBER =================
-def get_next_report_number():
-    files = os.listdir(".")
-    numbers = []
-
-    for f in files:
-        if f.startswith("Chrome_Forensic_Report_") and f.endswith(".txt"):
-            try:
-                num = int(f.replace("Chrome_Forensic_Report_", "").replace(".txt", ""))
-                numbers.append(num)
-            except ValueError:
-                pass
-
-    return max(numbers) + 1 if numbers else 1
 
 # ================= TIME CONVERSION =================
 def chrome_time_to_datetime(chrome_time):
     if chrome_time == 0:
         return "N/A"
-    return (datetime(1601, 1, 1) + timedelta(microseconds=chrome_time)) \
-        .strftime("%Y-%m-%d %H:%M:%S")
+    return (
+        datetime(1601, 1, 1) + timedelta(microseconds=chrome_time)
+    ).strftime("%Y-%m-%d %H:%M:%S")
+
 
 # ================= SEARCH EXTRACTION =================
 def extract_search(url, title):
@@ -60,6 +52,7 @@ def extract_search(url, title):
 
     return None, None
 
+
 # ================= BANNER =================
 def banner():
     print("""
@@ -72,9 +65,10 @@ def banner():
 ╚════════════════════════════════════════════════════════════╝
 """)
 
+
 # ================= SEARCH HISTORY =================
-def analyze_search_history():
-    print("\n🔍 SEARCH HISTORY (Including ChatGPT)")
+def analyze_search_history(limit):
+    print("\n🔍 SEARCH HISTORY")
     print("─" * 62)
 
     conn = sqlite3.connect("History_copy")
@@ -95,14 +89,16 @@ def analyze_search_history():
             print(f"     🔑 Query  : {query}")
             print("─" * 62)
             count += 1
-        if count > 20:
+
+        if count > limit:
             break
 
     conn.close()
 
+
 # ================= VISITED WEBSITES =================
-def analyze_visited_sites():
-    print("\n🌐 VISITED WEBSITES (Last 20)")
+def analyze_visited_sites(limit):
+    print(f"\n🌐 VISITED WEBSITES (Last {limit})")
     print("─" * 62)
 
     conn = sqlite3.connect("History_copy")
@@ -114,8 +110,8 @@ def analyze_visited_sites():
         WHERE url NOT LIKE '%oauth%'
         AND url NOT LIKE '%accounts.google%'
         ORDER BY last_visit_time DESC
-        LIMIT 20
-    """)
+        LIMIT ?
+    """, (limit,))
 
     for i, (url, title, visits, time) in enumerate(cursor.fetchall(), 1):
         domain = urlparse(url).netloc
@@ -127,30 +123,69 @@ def analyze_visited_sites():
 
     conn.close()
 
+
 # ================= MAIN =================
 def main():
-    report_number = get_next_report_number()
-    output_file = f"Chrome_Forensic_Report_{report_number}.txt"
+    parser = argparse.ArgumentParser(
+        description="Chrome Browser History Forensic Analyzer"
+    )
 
-    sys.stdout = TeeOutput(output_file)
+    parser.add_argument(
+        "-s", "--search",
+        type=int,
+        default=20,
+        help="Number of search queries"
+    )
+
+    parser.add_argument(
+        "-v", "--visited",
+        type=int,
+        default=20,
+        help="Number of visited sites"
+    )
+
+    parser.add_argument(
+        "-o", "--output",
+        help="Output report filename"
+    )
+
+    args = parser.parse_args()
+
+    if args.output:
+        sys.stdout = TeeOutput(args.output)
 
     banner()
 
-    history_path = os.path.expanduser("~/.config/google-chrome/Default/History")
+    base_path = os.path.expanduser("~/.config/google-chrome")
 
-    if not os.path.exists(history_path):
-        print("❌ Chrome history file not found")
+    if not os.path.exists(base_path):
+        print("❌ Chrome directory not found")
         return
 
-    shutil.copy(history_path, "History_copy")
+    profiles = [
+        p for p in os.listdir(base_path)
+        if p == "Default" or p.startswith("Profile")
+    ]
 
-    analyze_search_history()
-    analyze_visited_sites()
+    if not profiles:
+        print("❌ No Chrome profiles found")
+        return
 
-    print("\n✔ ChatGPT Queries Derived from Page Titles")
-    print("✔ Forensic Integrity Maintained")
-    print("✔ Analysis Completed Successfully")
-    print(f"📁 Report saved as: {output_file}\n")
+    for profile in profiles:
+        history_path = os.path.join(base_path, profile, "History")
+
+        if not os.path.exists(history_path):
+            continue
+
+        print(f"\n📂 Analyzing Profile: {profile}")
+
+        shutil.copy(history_path, "History_copy")
+
+        analyze_search_history(args.search)
+        analyze_visited_sites(args.visited)
+
+    print("\n✔ Forensic Analysis Completed Successfully")
+
 
 if __name__ == "__main__":
     main()
